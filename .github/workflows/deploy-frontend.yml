@@ -36,4 +36,4 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: harry-ecommerce-frontend
-        package: ecommerce-app/frontend/build
+        package: ecommerce-app/frontend
