@@ -7,6 +7,12 @@ namespace PaymentService.Controllers;
 [Route("api/[controller]")]
 public class PaymentController : ControllerBase
 {
+    [HttpGet("/")]
+    public ActionResult<string> HealthCheck()
+    {
+        return Ok("Payment Service is running!");
+    }
+
     private static List<Payment> _payments = new();
     private static int _nextPaymentId = 1;
 

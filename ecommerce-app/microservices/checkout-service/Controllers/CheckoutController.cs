@@ -7,6 +7,12 @@ namespace CheckoutService.Controllers;
 [Route("api/[controller]")]
 public class CheckoutController : ControllerBase
 {
+    [HttpGet("/")]
+    public ActionResult<string> HealthCheck()
+    {
+        return Ok("Checkout Service is running!");
+    }
+
     private static List<Order> _orders = new();
     private static int _nextOrderId = 1;
 

@@ -7,6 +7,12 @@ namespace AuthService.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    [HttpGet("/")]
+    public ActionResult<string> HealthCheck()
+    {
+        return Ok("Auth Service is running!");
+    }
+
     private static List<User> _users = new()
     {
         new User { Id = 1, Username = "admin", Email = "admin@example.com", Password = "admin123" },
