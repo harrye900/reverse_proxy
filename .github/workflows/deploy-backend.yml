@@ -35,5 +35,5 @@ jobs:
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ secrets.AZURE_BACKEND_APP_NAME }}
+        app-name: harry-ecommerce-backend
         package: ./publish

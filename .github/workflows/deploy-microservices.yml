@@ -7,9 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy-auth-service:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v4
     
@@ -23,22 +22,65 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Build and Publish All Microservices
+    - name: Build and Publish Auth Service
       run: |
-        # Build Auth Service
         dotnet restore ecommerce-app/microservices/auth-service/AuthService.csproj
-        dotnet publish ecommerce-app/microservices/auth-service/AuthService.csproj -c Release -o ./microservices-publish/auth
-        
-        # Build Checkout Service
-        dotnet restore ecommerce-app/microservices/checkout-service/CheckoutService.csproj
-        dotnet publish ecommerce-app/microservices/checkout-service/CheckoutService.csproj -c Release -o ./microservices-publish/checkout
-        
-        # Build Payment Service
-        dotnet restore ecommerce-app/microservices/payment-service/PaymentService.csproj
-        dotnet publish ecommerce-app/microservices/payment-service/PaymentService.csproj -c Release -o ./microservices-publish/payment
+        dotnet publish ecommerce-app/microservices/auth-service/AuthService.csproj -c Release -o ./auth-publish
     
-    - name: Deploy All Microservices
+    - name: Deploy Auth Service
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ secrets.AZURE_MICROSERVICES_APP_NAME }}
-        package: ./microservices-publish
+        app-name: harry-ecommerce-microservices
+        package: ./auth-publish
+
+  deploy-checkout-service:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Build and Publish Checkout Service
+      run: |
+        dotnet restore ecommerce-app/microservices/checkout-service/CheckoutService.csproj
+        dotnet publish ecommerce-app/microservices/checkout-service/CheckoutService.csproj -c Release -o ./checkout-publish
+    
+    - name: Deploy Checkout Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: harry-ecommerce-checkout
+        package: ./checkout-publish
+
+  deploy-payment-service:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Build and Publish Payment Service
+      run: |
+        dotnet restore ecommerce-app/microservices/payment-service/PaymentService.csproj
+        dotnet publish ecommerce-app/microservices/payment-service/PaymentService.csproj -c Release -o ./payment-publish
+    
+    - name: Deploy Payment Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: harry-ecommerce-payment
+        package: ./payment-publish

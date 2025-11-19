@@ -18,6 +18,19 @@
       "kind": "StorageV2"
     },
     {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-03-01",
+      "name": "[concat(parameters('appNamePrefix'), '-plan')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "B1"
+      },
+      "kind": "linux",
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2021-03-01",
       "name": "[concat(parameters('appNamePrefix'), '-frontend')]",
@@ -52,7 +65,39 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2021-03-01",
-      "name": "[concat(parameters('appNamePrefix'), '-microservices')]",
+      "name": "[concat(parameters('appNamePrefix'), '-auth')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', concat(parameters('appNamePrefix'), '-plan'))]"
+      ],
+      "kind": "app,linux",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat(parameters('appNamePrefix'), '-plan'))]",
+        "siteConfig": {
+          "linuxFxVersion": "DOTNETCORE:8.0"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-03-01",
+      "name": "[concat(parameters('appNamePrefix'), '-checkout')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', concat(parameters('appNamePrefix'), '-plan'))]"
+      ],
+      "kind": "app,linux",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat(parameters('appNamePrefix'), '-plan'))]",
+        "siteConfig": {
+          "linuxFxVersion": "DOTNETCORE:8.0"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2021-03-01",
+      "name": "[concat(parameters('appNamePrefix'), '-payment')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', concat(parameters('appNamePrefix'), '-plan'))]"
