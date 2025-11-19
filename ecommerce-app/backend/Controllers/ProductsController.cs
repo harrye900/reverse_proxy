@@ -15,6 +15,12 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
+    [HttpGet("/")]
+    public ActionResult<string> HealthCheck()
+    {
+        return Ok("Ecommerce API is running!");
+    }
+
     [HttpGet]
     public ActionResult<List<Product>> GetProducts()
     {

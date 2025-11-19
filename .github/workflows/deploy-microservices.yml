@@ -26,6 +26,7 @@ jobs:
       run: |
         dotnet restore ecommerce-app/microservices/auth-service/AuthService.csproj
         dotnet publish ecommerce-app/microservices/auth-service/AuthService.csproj -c Release -o ./auth-publish
+        ls -la ./auth-publish/
     
     - name: Deploy Auth Service
       uses: azure/webapps-deploy@v2
@@ -52,6 +53,7 @@ jobs:
       run: |
         dotnet restore ecommerce-app/microservices/checkout-service/CheckoutService.csproj
         dotnet publish ecommerce-app/microservices/checkout-service/CheckoutService.csproj -c Release -o ./checkout-publish
+        ls -la ./checkout-publish/
     
     - name: Deploy Checkout Service
       uses: azure/webapps-deploy@v2
@@ -78,6 +80,7 @@ jobs:
       run: |
         dotnet restore ecommerce-app/microservices/payment-service/PaymentService.csproj
         dotnet publish ecommerce-app/microservices/payment-service/PaymentService.csproj -c Release -o ./payment-publish
+        ls -la ./payment-publish/
     
     - name: Deploy Payment Service
       uses: azure/webapps-deploy@v2

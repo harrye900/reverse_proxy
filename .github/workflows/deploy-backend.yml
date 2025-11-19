@@ -23,14 +23,11 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Restore dependencies
-      run: dotnet restore ecommerce-app/backend/EcommerceApi.csproj
-    
-    - name: Build
-      run: dotnet build ecommerce-app/backend/EcommerceApi.csproj --no-restore
-    
-    - name: Publish
-      run: dotnet publish ecommerce-app/backend/EcommerceApi.csproj -c Release -o ./publish
+    - name: Build and Publish
+      run: |
+        dotnet restore ecommerce-app/backend/EcommerceApi.csproj
+        dotnet publish ecommerce-app/backend/EcommerceApi.csproj -c Release -o ./publish
+        ls -la ./publish/
     
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
