@@ -23,9 +23,12 @@ jobs:
       with:
         node-version: '18'
     
-    - name: Install dependencies
+    - name: Clear npm cache and install dependencies
       run: |
+        npm cache clean --force
+        rm -rf node_modules
         rm -f package-lock.json
+        npm install --no-package-lock
         npm install
       working-directory: ecommerce-app/frontend
     
