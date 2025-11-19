@@ -28,7 +28,6 @@ jobs:
         npm install
         chmod +x node_modules/.bin/*
         npm run build
-        ls -la build/
       working-directory: ecommerce-app/frontend
       env:
         REACT_APP_API_URL: https://harry-ecommerce-backend.azurewebsites.net
@@ -37,4 +36,4 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: harry-ecommerce-frontend
-        package: ecommerce-app/frontend
+        package: ecommerce-app/frontend/build
