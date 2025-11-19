@@ -28,6 +28,7 @@ jobs:
         npm install
         chmod +x node_modules/.bin/*
         npm run build
+        echo '{"name":"ecommerce-frontend","version":"1.0.0","scripts":{"start":"npx serve -s . -p 8080"},"dependencies":{"serve":"^14.0.0"}}' > build/package.json
       working-directory: ecommerce-app/frontend
       env:
         REACT_APP_API_URL: https://harry-ecommerce-backend.azurewebsites.net
