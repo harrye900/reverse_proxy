@@ -23,4 +23,4 @@ app.UseCors("AllowReactApp");
 app.UseRouting();
 app.MapControllers();
 
-// Fixed deployment`napp.Run("http://localhost:5000");
+app.Run("http://localhost:5000");
