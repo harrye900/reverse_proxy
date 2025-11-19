@@ -1,15 +1,11 @@
-name: Deploy Frontend to Azure App Service
+name: Test Frontend Deployment
 
 on:
-  push:
-    branches: [ deploytoappservce ]
-    paths: [ 'ecommerce-app/frontend/**' ]
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  test-frontend:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v4
     
@@ -23,23 +19,14 @@ jobs:
       with:
         node-version: '20'
     
-    - name: Install dependencies
+    - name: Install and Build
       run: |
-        rm -rf node_modules
-        rm -f package-lock.json
         npm install
-        chmod +x node_modules/.bin/*
-      working-directory: ecommerce-app/frontend
-    
-    - name: Build
-      run: npm run build
+        npm run build
+        ls -la build/
       working-directory: ecommerce-app/frontend
       env:
-        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-    
-    - name: Verify build folder
-      run: ls -la build/
-      working-directory: ecommerce-app/frontend
+        REACT_APP_API_URL: https://harry-ecommerce-backend.azurewebsites.net
     
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
