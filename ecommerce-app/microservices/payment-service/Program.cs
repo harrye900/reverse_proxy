@@ -15,4 +15,5 @@ app.UseCors();
 app.UseRouting();
 app.MapControllers();
 
-app.Run("http://localhost:5003");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5003";
+app.Run($"http://0.0.0.0:{port}");
