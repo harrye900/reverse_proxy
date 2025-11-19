@@ -26,6 +26,7 @@ jobs:
     - name: Install and Build
       run: |
         npm install
+        chmod +x node_modules/.bin/*
         npm run build
         ls -la build/
       working-directory: ecommerce-app/frontend
