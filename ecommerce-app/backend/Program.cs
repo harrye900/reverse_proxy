@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000")
+            policy.WithOrigins("http://localhost:3000", "https://harry-ecommerce-frontend.azurewebsites.net")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -23,4 +23,5 @@ app.UseCors("AllowReactApp");
 app.UseRouting();
 app.MapControllers();
 
-app.Run("http://localhost:5000");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Run($"http://0.0.0.0:{port}");
