@@ -21,3 +21,4 @@ c:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\backend\obj\Debug\net8.0\ref
 c:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\backend\obj\Debug\net8.0\EcommerceApi.pdb
 c:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\backend\obj\Debug\net8.0\EcommerceApi.genruntimeconfig.cache
 c:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\backend\obj\Debug\net8.0\ref\EcommerceApi.dll
+C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\backend\obj\Debug\net8.0\EcommerceApi.sourcelink.json

@@ -21,3 +21,4 @@ C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\auth-service\o
 C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\auth-service\obj\Debug\net8.0\AuthService.pdb
 C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\auth-service\obj\Debug\net8.0\AuthService.genruntimeconfig.cache
 C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\auth-service\obj\Debug\net8.0\ref\AuthService.dll
+C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\auth-service\obj\Debug\net8.0\AuthService.sourcelink.json

@@ -1,0 +1,40 @@
+name: Deploy Backend to Azure App Service
+
+on:
+  push:
+    branches: [ deploytoappservce ]
+    paths: [ 'ecommerce-app/backend/**' ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore ecommerce-app/backend/EcommerceApi.csproj
+    
+    - name: Build
+      run: dotnet build ecommerce-app/backend/EcommerceApi.csproj --no-restore
+    
+    - name: Publish
+      run: dotnet publish ecommerce-app/backend/EcommerceApi.csproj -c Release -o ./publish
+    
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ secrets.AZURE_BACKEND_APP_NAME }}
+        publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
+        package: ./publish

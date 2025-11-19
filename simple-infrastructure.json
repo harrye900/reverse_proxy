@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appNamePrefix": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-03-01",
+      "name": "[concat(parameters('appNamePrefix'), '-plan')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "B1"
+      },
+      "kind": "linux",
+      "properties": {
+        "reserved": true
+      }
+    }
+  ]
+}
