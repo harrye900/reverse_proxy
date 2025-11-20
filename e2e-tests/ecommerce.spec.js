@@ -6,16 +6,16 @@ test.describe('Ecommerce Application E2E Tests', () => {
   test('should load homepage and display products', async ({ page }) => {
     await page.goto(baseUrl);
     await expect(page.locator('h1')).toContainText('Ecommerce Store');
-    await expect(page.locator('.product-card')).toHaveCount({ min: 1 });
+    await expect(page.locator('.product-card')).toHaveCountGreaterThan(0);
   });
 
   test('should register new user', async ({ page }) => {
     await page.goto(baseUrl);
     await page.click('button:has-text("Register")');
     
-    await page.fill('input[name="username"]', 'testuser' + Date.now());
-    await page.fill('input[name="email"]', 'test' + Date.now() + '@example.com');
-    await page.fill('input[name="password"]', 'password123');
+    await page.fill('input[placeholder="Username"]', 'testuser' + Date.now());
+    await page.fill('input[placeholder="Email"]', 'test' + Date.now() + '@example.com');
+    await page.fill('input[placeholder="Password"]', 'password123');
     
     await page.click('button[type="submit"]');
     await expect(page.locator('text=Welcome')).toBeVisible();
@@ -35,9 +35,9 @@ test.describe('Ecommerce Application E2E Tests', () => {
     
     // Register user
     await page.click('button:has-text("Register")');
-    await page.fill('input[name="username"]', 'checkoutuser' + Date.now());
-    await page.fill('input[name="email"]', 'checkout' + Date.now() + '@example.com');
-    await page.fill('input[name="password"]', 'password123');
+    await page.fill('input[placeholder="Username"]', 'checkoutuser' + Date.now());
+    await page.fill('input[placeholder="Email"]', 'checkout' + Date.now() + '@example.com');
+    await page.fill('input[placeholder="Password"]', 'password123');
     await page.click('button[type="submit"]');
     
     // Add product to cart

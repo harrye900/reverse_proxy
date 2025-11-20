@@ -1,0 +1,156 @@
+name: Deploy All Services
+
+on:
+  push:
+    branches: [ deploytoappservce ]
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Build and Publish Backend
+      run: |
+        dotnet restore ecommerce-app/backend/EcommerceApi.csproj
+        dotnet publish ecommerce-app/backend/EcommerceApi.csproj -c Release -o ./publish
+        ls -la ./publish/
+    
+    - name: Deploy Backend
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: harry-ecommerce-backend
+        package: ./publish
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    
+    - name: Install and Build Frontend
+      run: |
+        npm install
+        chmod +x node_modules/.bin/*
+        npm run build
+        echo '{"name":"ecommerce-frontend","version":"1.0.0","scripts":{"start":"npx serve -s . -l 8080"},"dependencies":{"serve":"^14.0.0"}}' > build/package.json
+      working-directory: ecommerce-app/frontend
+      env:
+        REACT_APP_API_URL: https://harry-ecommerce-backend.azurewebsites.net
+    
+    - name: Deploy Frontend
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: harry-ecommerce-frontend
+        package: ecommerce-app/frontend/build
+
+  deploy-microservices:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [
+          { name: "auth-service", app: "harry-ecommerce-microservices", project: "AuthService" },
+          { name: "checkout-service", app: "harry-ecommerce-checkout", project: "CheckoutService" },
+          { name: "payment-service", app: "harry-ecommerce-payment", project: "PaymentService" }
+        ]
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Build and Publish ${{ matrix.service.name }}
+      run: |
+        dotnet restore ecommerce-app/microservices/${{ matrix.service.name }}/${{ matrix.service.project }}.csproj
+        dotnet publish ecommerce-app/microservices/${{ matrix.service.name }}/${{ matrix.service.project }}.csproj -c Release -o ./${{ matrix.service.name }}-publish
+        ls -la ./${{ matrix.service.name }}-publish/
+    
+    - name: Deploy ${{ matrix.service.name }}
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ matrix.service.app }}
+        package: ./${{ matrix.service.name }}-publish
+
+  run-e2e-tests:
+    needs: [deploy-backend, deploy-frontend, deploy-microservices]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    
+    - name: Wait for deployments
+      run: sleep 60
+    
+    - name: Test All Services
+      run: |
+        echo "Testing all deployed services..."
+        
+        services=(
+          "https://harry-ecommerce-frontend.azurewebsites.net/"
+          "https://harry-ecommerce-backend.azurewebsites.net/api/products"
+          "https://harry-ecommerce-microservices.azurewebsites.net/"
+          "https://harry-ecommerce-checkout.azurewebsites.net/"
+          "https://harry-ecommerce-payment.azurewebsites.net/"
+        )
+        
+        for service in "${services[@]}"; do
+          echo "Testing $service..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" "$service")
+          if [ $response -eq 200 ]; then
+            echo "✅ $service is healthy (HTTP $response)"
+          else
+            echo "❌ $service failed (HTTP $response)"
+            exit 1
+          fi
+        done
+        
+        echo "🎉 All services deployed and healthy!"
+    
+    - name: Install E2E Test Dependencies
+      run: |
+        cd e2e-tests
+        npm install
+        npx playwright install chromium
+    
+    - name: Run E2E Tests
+      run: |
+        cd e2e-tests
+        npm test
+    
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: e2e-test-results
+        path: e2e-tests/test-results/
