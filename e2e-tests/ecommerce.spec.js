@@ -3,14 +3,20 @@ const { test, expect } = require('@playwright/test');
 test.describe('Ecommerce Application E2E Tests', () => {
   const baseUrl = 'https://harry-ecommerce-frontend.azurewebsites.net';
 
+  test.beforeEach(async ({ page }) => {
+    // Wait for the page to be accessible
+    await page.goto(baseUrl, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForLoadState('domcontentloaded');
+  });
+
   test('should load homepage and display products', async ({ page }) => {
-    await page.goto(baseUrl);
-    await expect(page.locator('h1')).toContainText('Ecommerce Store');
+    await expect(page.locator('h1')).toContainText('Ecommerce Store', { timeout: 30000 });
+    // Wait for products to load from API
+    await page.waitForTimeout(5000);
     await expect(page.locator('.product-card')).toHaveCountGreaterThan(0);
   });
 
   test('should register new user', async ({ page }) => {
-    await page.goto(baseUrl);
     await page.click('button:has-text("Register")');
     
     await page.fill('input[placeholder="Username"]', 'testuser' + Date.now());
@@ -22,7 +28,8 @@ test.describe('Ecommerce Application E2E Tests', () => {
   });
 
   test('should add product to cart', async ({ page }) => {
-    await page.goto(baseUrl);
+    // Wait for products to load
+    await page.waitForTimeout(5000);
     
     const firstProduct = page.locator('.product-card').first();
     await firstProduct.locator('button:has-text("Add to Cart")').click();
@@ -31,7 +38,6 @@ test.describe('Ecommerce Application E2E Tests', () => {
   });
 
   test('should complete checkout flow', async ({ page }) => {
-    await page.goto(baseUrl);
     
     // Register user
     await page.click('button:has-text("Register")');

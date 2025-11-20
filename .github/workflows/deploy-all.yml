@@ -110,7 +110,7 @@ jobs:
         node-version: '20'
     
     - name: Wait for deployments
-      run: sleep 60
+      run: sleep 120
     
     - name: Test All Services
       run: |

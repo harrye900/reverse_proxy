@@ -1,11 +1,13 @@
 module.exports = {
   testDir: '.',
-  timeout: 30000,
+  timeout: 60000,
   use: {
     headless: true,
     viewport: { width: 1280, height: 720 },
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    navigationTimeout: 60000,
+    actionTimeout: 30000,
   },
   projects: [
     {
