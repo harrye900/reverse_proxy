@@ -1,0 +1,117 @@
+name: End-to-End Tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    
+    - name: Test Frontend Health
+      run: |
+        echo "Testing Frontend..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://harry-ecommerce-frontend.azurewebsites.net/)
+        if [ $response -eq 200 ]; then
+          echo "✅ Frontend is healthy (HTTP $response)"
+        else
+          echo "❌ Frontend failed (HTTP $response)"
+          exit 1
+        fi
+    
+    - name: Test Backend API
+      run: |
+        echo "Testing Backend API..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://harry-ecommerce-backend.azurewebsites.net/api/products)
+        if [ $response -eq 200 ]; then
+          echo "✅ Backend API is healthy (HTTP $response)"
+        else
+          echo "❌ Backend API failed (HTTP $response)"
+          exit 1
+        fi
+    
+    - name: Test Auth Service
+      run: |
+        echo "Testing Auth Service..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://harry-ecommerce-microservices.azurewebsites.net/)
+        if [ $response -eq 200 ]; then
+          echo "✅ Auth Service is healthy (HTTP $response)"
+        else
+          echo "❌ Auth Service failed (HTTP $response)"
+          exit 1
+        fi
+    
+    - name: Test Checkout Service
+      run: |
+        echo "Testing Checkout Service..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://harry-ecommerce-checkout.azurewebsites.net/)
+        if [ $response -eq 200 ]; then
+          echo "✅ Checkout Service is healthy (HTTP $response)"
+        else
+          echo "❌ Checkout Service failed (HTTP $response)"
+          exit 1
+        fi
+    
+    - name: Test Payment Service
+      run: |
+        echo "Testing Payment Service..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://harry-ecommerce-payment.azurewebsites.net/)
+        if [ $response -eq 200 ]; then
+          echo "✅ Payment Service is healthy (HTTP $response)"
+        else
+          echo "❌ Payment Service failed (HTTP $response)"
+          exit 1
+        fi
+    
+    - name: Test Complete User Flow
+      run: |
+        echo "Testing complete ecommerce flow..."
+        
+        # Test product listing
+        products=$(curl -s https://harry-ecommerce-backend.azurewebsites.net/api/products)
+        if echo "$products" | grep -q "name"; then
+          echo "✅ Products API returns data"
+        else
+          echo "❌ Products API failed"
+          exit 1
+        fi
+        
+        # Test user registration
+        register_response=$(curl -s -X POST https://harry-ecommerce-microservices.azurewebsites.net/api/auth/register \
+          -H "Content-Type: application/json" \
+          -d '{"username":"testuser","email":"test@example.com","password":"test123"}')
+        
+        if echo "$register_response" | grep -q "success\|Success"; then
+          echo "✅ User registration works"
+        else
+          echo "❌ User registration failed"
+          exit 1
+        fi
+        
+        echo "🎉 All API tests passed!"
+    
+    - name: Install E2E Test Dependencies
+      run: |
+        cd e2e-tests
+        npm install
+        npx playwright install chromium
+    
+    - name: Run Playwright E2E Tests
+      run: |
+        cd e2e-tests
+        npm test
+    
+    - name: Upload E2E Test Results
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: playwright-report
+        path: e2e-tests/test-results/
