@@ -21,3 +21,4 @@ C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\payment-servic
 C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\payment-service\obj\Debug\net8.0\PaymentService.pdb
 C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\payment-service\obj\Debug\net8.0\PaymentService.genruntimeconfig.cache
 C:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\payment-service\obj\Debug\net8.0\ref\PaymentService.dll
+c:\Users\HARRY\racetrac\reverse_proxy\ecommerce-app\microservices\payment-service\obj\Debug\net8.0\PaymentService.sourcelink.json
