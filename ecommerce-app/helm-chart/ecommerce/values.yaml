@@ -106,7 +106,7 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
   hosts:
-    - host: ecommerce.local
+    - host: saige.online
       paths:
         - path: /
           pathType: Prefix
