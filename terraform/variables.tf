@@ -13,5 +13,5 @@ variable "node_count" {
 variable "vm_size" {
   description = "Size of the Virtual Machine"
   type        = string
-  default     = "Standard_D2_v2"
+  default     = "Standard_B2s"
 }
