@@ -105,6 +105,8 @@ ingress:
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
     - host: saige.online
       paths:
@@ -114,3 +116,7 @@ ingress:
         - path: /api
           pathType: Prefix
           service: backend
+  tls:
+    - secretName: saige-online-tls
+      hosts:
+        - saige.online
