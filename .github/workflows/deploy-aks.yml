@@ -3,7 +3,7 @@ name: Deploy AKS Infrastructure
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ deploytoaks ]
     paths: [ 'terraform/**' ]
 
 jobs:
