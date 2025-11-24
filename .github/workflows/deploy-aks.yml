@@ -58,3 +58,12 @@ jobs:
           --set authService.image.tag=${{ github.sha }} \
           --set checkoutService.image.tag=${{ github.sha }} \
           --set paymentService.image.tag=${{ github.sha }}
+    
+    - name: Verify deployment
+      run: |
+        echo "Checking namespaces:"
+        kubectl get namespaces
+        echo "Checking pods:"
+        kubectl get pods -n ecommerce
+        echo "Checking services:"
+        kubectl get services -n ecommerce
