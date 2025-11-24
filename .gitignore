@@ -1,0 +1,24 @@
+# Terraform
+terraform/.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Build outputs
+bin/
+obj/
+out/
+
+# Dependencies
+node_modules/
+packages/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db

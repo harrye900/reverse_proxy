@@ -1,0 +1,116 @@
+# Global settings
+global:
+  registry: acrecommerce1809.azurecr.io
+  pullPolicy: Always
+  namespace: ecommerce
+
+# Frontend service
+frontend:
+  name: frontend
+  image:
+    repository: ecommerce-frontend
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 80
+  replicas: 2
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Backend service
+backend:
+  name: backend
+  image:
+    repository: ecommerce-backend
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5000
+    targetPort: 5000
+  replicas: 2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# Auth microservice
+authService:
+  name: auth-service
+  image:
+    repository: ecommerce-auth
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5001
+    targetPort: 5001
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Checkout microservice
+checkoutService:
+  name: checkout-service
+  image:
+    repository: ecommerce-checkout
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5002
+    targetPort: 5002
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Payment microservice
+paymentService:
+  name: payment-service
+  image:
+    repository: ecommerce-payment
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5003
+    targetPort: 5003
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: ecommerce.local
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+        - path: /api
+          pathType: Prefix
+          service: backend
