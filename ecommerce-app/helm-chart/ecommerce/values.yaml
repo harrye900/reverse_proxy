@@ -104,9 +104,13 @@ ingress:
   enabled: true
   className: "nginx"
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      location ~* "^.+\.(css|js|png|jpg|jpeg|gif|ico|svg)$" {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+      }
   hosts:
     - host: saige.online
       paths:
