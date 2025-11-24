@@ -55,9 +55,4 @@ resource "random_integer" "suffix" {
   max = 9999
 }
 
-resource "azurerm_role_assignment" "aks_acr" {
-  principal_id                     = azurerm_kubernetes_cluster.ecommerce.kubelet_identity[0].object_id
-  role_definition_name             = "AcrPull"
-  scope                            = azurerm_container_registry.ecommerce.id
-  skip_service_principal_aad_check = true
-}
+# Role assignment will be handled manually in the workflow
