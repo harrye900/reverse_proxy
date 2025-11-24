@@ -21,17 +21,9 @@ data "azurerm_kubernetes_cluster" "ecommerce" {
   resource_group_name = data.azurerm_resource_group.ecommerce.name
 }
 
-resource "azurerm_container_registry" "ecommerce" {
-  name                = "acrecommerce${random_integer.suffix.result}"
+data "azurerm_container_registry" "ecommerce" {
+  name                = "acrecommerce1809"
   resource_group_name = data.azurerm_resource_group.ecommerce.name
-  location            = data.azurerm_resource_group.ecommerce.location
-  sku                 = "Basic"
-  admin_enabled       = true
-}
-
-resource "random_integer" "suffix" {
-  min = 1000
-  max = 9999
 }
 
 # Role assignment will be handled manually in the workflow

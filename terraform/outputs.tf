@@ -7,11 +7,11 @@ output "kubernetes_cluster_name" {
 }
 
 output "container_registry_name" {
-  value = azurerm_container_registry.ecommerce.name
+  value = data.azurerm_container_registry.ecommerce.name
 }
 
 output "container_registry_login_server" {
-  value = azurerm_container_registry.ecommerce.login_server
+  value = data.azurerm_container_registry.ecommerce.login_server
 }
 
 output "kube_config" {

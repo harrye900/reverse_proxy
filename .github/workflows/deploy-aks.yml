@@ -41,6 +41,6 @@ jobs:
     
     - name: Display ACR Info
       run: |
-        echo "ACR created successfully:"
-        az acr list -g rg-ecommerce-aks --query "[0].{name:name,loginServer:loginServer}" -o table
-        echo "Note: ACR integration with AKS requires Owner permissions and should be configured manually"
+        echo "Using existing ACR: acrecommerce1809"
+        az acr show -g rg-ecommerce-aks -n acrecommerce1809 --query "{name:name,loginServer:loginServer}" -o table
+        echo "Note: ACR integration with AKS can be configured with: az aks update -n aks-ecommerce-cluster -g rg-ecommerce-aks --attach-acr acrecommerce1809"
