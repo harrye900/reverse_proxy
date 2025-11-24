@@ -12,15 +12,14 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "ecommerce" {
-  name     = "rg-ecommerce-aks"
-  location = "Canada Central"
+data "azurerm_resource_group" "ecommerce" {
+  name = "rg-ecommerce-aks"
 }
 
 resource "azurerm_kubernetes_cluster" "ecommerce" {
   name                = "aks-ecommerce-cluster"
-  location            = azurerm_resource_group.ecommerce.location
-  resource_group_name = azurerm_resource_group.ecommerce.name
+  location            = data.azurerm_resource_group.ecommerce.location
+  resource_group_name = data.azurerm_resource_group.ecommerce.name
   dns_prefix          = "ecommerce-aks"
 
   default_node_pool {
@@ -45,8 +44,8 @@ resource "azurerm_kubernetes_cluster" "ecommerce" {
 
 resource "azurerm_container_registry" "ecommerce" {
   name                = "acrecommerce${random_integer.suffix.result}"
-  resource_group_name = azurerm_resource_group.ecommerce.name
-  location            = azurerm_resource_group.ecommerce.location
+  resource_group_name = data.azurerm_resource_group.ecommerce.name
+  location            = data.azurerm_resource_group.ecommerce.location
   sku                 = "Basic"
   admin_enabled       = true
 }
