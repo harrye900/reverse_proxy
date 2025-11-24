@@ -39,6 +39,8 @@ jobs:
         az aks get-credentials --resource-group rg-ecommerce-aks --name aks-ecommerce-cluster --overwrite-existing
         kubectl get nodes
     
-    - name: Configure ACR Integration
+    - name: Display ACR Info
       run: |
-        az aks update -n aks-ecommerce-cluster -g rg-ecommerce-aks --attach-acr $(az acr list -g rg-ecommerce-aks --query "[0].name" -o tsv)
+        echo "ACR created successfully:"
+        az acr list -g rg-ecommerce-aks --query "[0].{name:name,loginServer:loginServer}" -o table
+        echo "Note: ACR integration with AKS requires Owner permissions and should be configured manually"
