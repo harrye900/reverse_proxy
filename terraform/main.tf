@@ -16,30 +16,9 @@ data "azurerm_resource_group" "ecommerce" {
   name = "rg-ecommerce-aks"
 }
 
-resource "azurerm_kubernetes_cluster" "ecommerce" {
+data "azurerm_kubernetes_cluster" "ecommerce" {
   name                = "aks-ecommerce-cluster"
-  location            = data.azurerm_resource_group.ecommerce.location
   resource_group_name = data.azurerm_resource_group.ecommerce.name
-  dns_prefix          = "ecommerce-aks"
-
-  default_node_pool {
-    name       = "default"
-    node_count = 2
-    vm_size    = "Standard_B2s"
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  network_profile {
-    network_plugin = "kubenet"
-  }
-
-  tags = {
-    Environment = "Development"
-    Project     = "Ecommerce"
-  }
 }
 
 resource "azurerm_container_registry" "ecommerce" {

@@ -3,7 +3,7 @@ output "resource_group_name" {
 }
 
 output "kubernetes_cluster_name" {
-  value = azurerm_kubernetes_cluster.ecommerce.name
+  value = data.azurerm_kubernetes_cluster.ecommerce.name
 }
 
 output "container_registry_name" {
@@ -15,6 +15,6 @@ output "container_registry_login_server" {
 }
 
 output "kube_config" {
-  value     = azurerm_kubernetes_cluster.ecommerce.kube_config_raw
+  value     = data.azurerm_kubernetes_cluster.ecommerce.kube_config_raw
   sensitive = true
 }
