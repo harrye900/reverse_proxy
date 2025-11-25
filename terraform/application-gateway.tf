@@ -101,7 +101,7 @@ resource "azurerm_application_gateway" "main" {
   backend_http_settings {
     name                  = "frontend-http-settings"
     cookie_based_affinity = "Disabled"
-    port                  = 30080
+    port                  = 31992
     protocol              = "Http"
     request_timeout       = 60
     probe_name            = "frontend-probe"
@@ -110,7 +110,7 @@ resource "azurerm_application_gateway" "main" {
   backend_http_settings {
     name                  = "backend-http-settings"
     cookie_based_affinity = "Disabled"
-    port                  = 30500
+    port                  = 31908
     protocol              = "Http"
     request_timeout       = 60
     probe_name            = "backend-probe"
@@ -121,20 +121,22 @@ resource "azurerm_application_gateway" "main" {
     name                = "frontend-probe"
     protocol            = "Http"
     path                = "/"
-    port                = 30080
-    interval            = 30
-    timeout             = 30
-    unhealthy_threshold = 3
+    host                = "localhost"
+    port                = 31992
+    interval            = 60
+    timeout             = 60
+    unhealthy_threshold = 5
   }
 
   probe {
     name                = "backend-probe"
     protocol            = "Http"
-    path                = "/api/health"
-    port                = 30500
-    interval            = 30
-    timeout             = 30
-    unhealthy_threshold = 3
+    path                = "/"
+    host                = "localhost"
+    port                = 31908
+    interval            = 60
+    timeout             = 60
+    unhealthy_threshold = 5
   }
 
   # HTTP listener

@@ -11,10 +11,9 @@ frontend:
     repository: ecommerce-frontend
     tag: latest
   service:
-    type: NodePort
+    type: LoadBalancer
     port: 80
     targetPort: 80
-    nodePort: 30080
   replicas: 2
   hpa:
     enabled: true
@@ -37,10 +36,9 @@ backend:
     repository: ecommerce-backend
     tag: latest
   service:
-    type: NodePort
+    type: LoadBalancer
     port: 5000
     targetPort: 5000
-    nodePort: 30500
   replicas: 2
   hpa:
     enabled: true
