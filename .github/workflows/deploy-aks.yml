@@ -69,19 +69,4 @@ jobs:
           --set checkoutService.image.tag=${{ github.sha }} \
           --set paymentService.image.tag=${{ github.sha }}
     
-    - name: Verify deployment
-      run: |
-        echo "Checking namespaces:"
-        kubectl get namespaces
-        echo "Checking pods:"
-        kubectl get pods -n ecommerce
-        echo "Checking services:"
-        kubectl get services -n ecommerce
-        echo "Checking ingress:"
-        kubectl get ingress -n ecommerce
-        echo "Checking certificates:"
-        kubectl get certificates -n ecommerce
-        echo "Checking certificate requests:"
-        kubectl get certificaterequests -n ecommerce
-        echo "Checking cluster issuers:"
-        kubectl get clusterissuers
+    
