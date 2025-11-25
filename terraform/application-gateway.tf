@@ -93,29 +93,48 @@ resource "azurerm_application_gateway" "main" {
 
   # Backend pools
   backend_address_pool {
-    name = "frontend-pool"
-  }
-
-  backend_address_pool {
-    name = "backend-pool"
+    name         = "aks-nodes-pool"
+    ip_addresses = ["10.224.0.4", "10.224.0.5"]
   }
 
   # HTTP settings
   backend_http_settings {
     name                  = "frontend-http-settings"
     cookie_based_affinity = "Disabled"
-    port                  = 80
+    port                  = 30080
     protocol              = "Http"
     request_timeout       = 60
+    probe_name            = "frontend-probe"
   }
 
   backend_http_settings {
     name                  = "backend-http-settings"
     cookie_based_affinity = "Disabled"
-    port                  = 5000
+    port                  = 30500
     protocol              = "Http"
     request_timeout       = 60
-    path                  = "/api"
+    probe_name            = "backend-probe"
+  }
+
+  # Health probes
+  probe {
+    name                = "frontend-probe"
+    protocol            = "Http"
+    path                = "/"
+    port                = 30080
+    interval            = 30
+    timeout             = 30
+    unhealthy_threshold = 3
+  }
+
+  probe {
+    name                = "backend-probe"
+    protocol            = "Http"
+    path                = "/api/health"
+    port                = 30500
+    interval            = 30
+    timeout             = 30
+    unhealthy_threshold = 3
   }
 
   # HTTP listener
@@ -126,14 +145,27 @@ resource "azurerm_application_gateway" "main" {
     protocol                       = "Http"
   }
 
+  # URL path map for routing
+  url_path_map {
+    name                               = "path-map"
+    default_backend_address_pool_name  = "aks-nodes-pool"
+    default_backend_http_settings_name = "frontend-http-settings"
+
+    path_rule {
+      name                       = "api-rule"
+      paths                      = ["/api/*"]
+      backend_address_pool_name  = "aks-nodes-pool"
+      backend_http_settings_name = "backend-http-settings"
+    }
+  }
+
   # Request routing rules
   request_routing_rule {
-    name                       = "frontend-rule"
-    rule_type                  = "Basic"
-    http_listener_name         = "http-listener"
-    backend_address_pool_name  = "frontend-pool"
-    backend_http_settings_name = "frontend-http-settings"
-    priority                   = 100
+    name               = "main-rule"
+    rule_type          = "PathBasedRouting"
+    http_listener_name = "http-listener"
+    url_path_map_name  = "path-map"
+    priority           = 100
   }
 
   tags = {
