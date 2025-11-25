@@ -11,7 +11,7 @@ frontend:
     repository: ecommerce-frontend
     tag: latest
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 80
     targetPort: 80
   replicas: 2
