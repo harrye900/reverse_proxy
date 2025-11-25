@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-stress
+  namespace: ecommerce
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cpu-stress
+  template:
+    metadata:
+      labels:
+        app: cpu-stress
+    spec:
+      containers:
+      - name: cpu-stress
+        image: busybox
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do timeout 30 yes > /dev/null & wget -q -O- http://frontend-service.ecommerce.svc.cluster.local; done"]
+        resources:
+          requests:
+            cpu: 200m
+            memory: 64Mi

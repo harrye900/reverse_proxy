@@ -23,4 +23,8 @@ app.UseCors("AllowReactApp");
 app.UseRouting();
 app.MapControllers();
 
+// Health check endpoint for Application Gateway
+app.MapGet("/", () => "Backend API is healthy");
+app.MapGet("/health", () => "OK");
+
 app.Run("http://0.0.0.0:5000");

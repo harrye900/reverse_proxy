@@ -135,7 +135,6 @@ resource "azurerm_application_gateway" "main" {
     port                  = 31908
     protocol              = "Http"
     request_timeout       = 60
-    probe_name            = "backend-probe"
   }
 
   # Health probes
@@ -150,16 +149,7 @@ resource "azurerm_application_gateway" "main" {
     unhealthy_threshold = 5
   }
 
-  probe {
-    name                = "backend-probe"
-    protocol            = "Http"
-    path                = "/"
-    host                = "localhost"
-    port                = 31908
-    interval            = 60
-    timeout             = 60
-    unhealthy_threshold = 5
-  }
+
 
   # HTTP listener
   http_listener {

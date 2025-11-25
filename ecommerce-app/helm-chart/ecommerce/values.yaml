@@ -19,7 +19,7 @@ frontend:
     enabled: true
     minReplicas: 2
     maxReplicas: 10
-    targetCPU: 70
+    targetCPU: 5
     targetMemory: 80
   resources:
     requests:
