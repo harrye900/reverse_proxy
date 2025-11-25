@@ -59,6 +59,28 @@ data "azurerm_kubernetes_cluster" "main" {
   resource_group_name = data.azurerm_resource_group.main.name
 }
 
+# Get AKS VNet
+data "azurerm_virtual_network" "aks_vnet" {
+  name                = "aks-vnet-40259644"
+  resource_group_name = "MC_rg-ecommerce-aks_aks-ecommerce-cluster_canadacentral"
+}
+
+# VNet Peering: App Gateway VNet to AKS VNet
+resource "azurerm_virtual_network_peering" "appgw_to_aks" {
+  name                      = "appgw-to-aks"
+  resource_group_name       = data.azurerm_resource_group.main.name
+  virtual_network_name      = azurerm_virtual_network.app_gateway.name
+  remote_virtual_network_id = data.azurerm_virtual_network.aks_vnet.id
+}
+
+# VNet Peering: AKS VNet to App Gateway VNet
+resource "azurerm_virtual_network_peering" "aks_to_appgw" {
+  name                      = "aks-to-appgw"
+  resource_group_name       = "MC_rg-ecommerce-aks_aks-ecommerce-cluster_canadacentral"
+  virtual_network_name      = data.azurerm_virtual_network.aks_vnet.name
+  remote_virtual_network_id = azurerm_virtual_network.app_gateway.id
+}
+
 # Application Gateway
 resource "azurerm_application_gateway" "main" {
   name                = "appgw-ecommerce"
