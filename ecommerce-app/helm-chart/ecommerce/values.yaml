@@ -128,7 +128,7 @@ paymentService:
 
 # Ingress configuration
 ingress:
-  enabled: true
+  enabled: false
   className: "nginx"
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-staging"
