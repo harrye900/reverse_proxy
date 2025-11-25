@@ -15,6 +15,12 @@ frontend:
     port: 80
     targetPort: 80
   replicas: 2
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPU: 70
+    targetMemory: 80
   resources:
     requests:
       memory: "128Mi"
@@ -34,6 +40,12 @@ backend:
     port: 5000
     targetPort: 5000
   replicas: 2
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 15
+    targetCPU: 70
+    targetMemory: 80
   resources:
     requests:
       memory: "256Mi"
@@ -53,6 +65,11 @@ authService:
     port: 5001
     targetPort: 5001
   replicas: 1
+  hpa:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPU: 70
   resources:
     requests:
       memory: "128Mi"
@@ -72,6 +89,11 @@ checkoutService:
     port: 5002
     targetPort: 5002
   replicas: 1
+  hpa:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 8
+    targetCPU: 70
   resources:
     requests:
       memory: "128Mi"
@@ -91,6 +113,11 @@ paymentService:
     port: 5003
     targetPort: 5003
   replicas: 1
+  hpa:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPU: 70
   resources:
     requests:
       memory: "128Mi"
