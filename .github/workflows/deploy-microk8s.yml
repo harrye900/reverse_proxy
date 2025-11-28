@@ -84,17 +84,27 @@ jobs:
       with:
         version: 'latest'
     
-    - name: Create kind cluster
-      uses: helm/kind-action@v1.4.0
-      with:
-        cluster_name: ecommerce-cluster
-    
-    - name: Deploy to Kubernetes
+    - name: Setup MicroK8s
       run: |
-        # Create namespace if it doesn't exist
-        kubectl create namespace ecommerce --dry-run=client -o yaml | kubectl apply -f -
+        # Install MicroK8s
+        sudo snap install microk8s --classic
+        sudo microk8s status --wait-ready
         
-        # Deploy using Helm (disable ingress for kind cluster)
+        # Enable required addons
+        sudo microk8s enable dns storage
+        
+        # Setup kubectl alias
+        sudo microk8s kubectl config view --raw > $HOME/.kube/config
+        
+    - name: Deploy to MicroK8s
+      run: |
+        # Wait for images to be available
+        sleep 30
+        
+        # Create namespace if it doesn't exist
+        sudo microk8s kubectl create namespace ecommerce --dry-run=client -o yaml | sudo microk8s kubectl apply -f -
+        
+        # Deploy using Helm
         helm upgrade --install ecommerce ./ecommerce-app/helm-chart/ecommerce \
           --namespace ecommerce \
           --set frontend.image.tag=latest \
@@ -102,10 +112,9 @@ jobs:
           --set authService.image.tag=latest \
           --set checkoutService.image.tag=latest \
           --set paymentService.image.tag=latest \
-          --set ingress.enabled=false
+          --set ingress.enabled=false \
+          --kubeconfig $HOME/.kube/config
         
         # Show deployment status
-        kubectl get pods -n ecommerce
-        kubectl get services -n ecommerce
-        kubectl describe pods -n ecommerce
-        kubectl get events -n ecommerce --sort-by='.lastTimestamp'
+        sudo microk8s kubectl get pods -n ecommerce
+        sudo microk8s kubectl get services -n ecommerce
