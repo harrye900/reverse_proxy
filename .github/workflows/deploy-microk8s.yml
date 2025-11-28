@@ -66,3 +66,29 @@ jobs:
         tags: |
           ${{ env.DOCKER_USERNAME }}/ecommerce-payment:latest
           ${{ env.DOCKER_USERNAME }}/ecommerce-payment:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Local Kubernetes
+      run: |
+        # Create namespace if it doesn't exist
+        kubectl create namespace ecommerce --dry-run=client -o yaml | kubectl apply -f -
+        
+        # Deploy using Helm
+        helm upgrade --install ecommerce ./ecommerce-app/helm-chart/ecommerce \
+          --namespace ecommerce \
+          --set frontend.image.tag=latest \
+          --set backend.image.tag=latest \
+          --set authService.image.tag=latest \
+          --set checkoutService.image.tag=latest \
+          --set paymentService.image.tag=latest \
+          --wait --timeout=10m
+        
+        # Show deployment status
+        kubectl get pods -n ecommerce
+        kubectl get services -n ecommerce
