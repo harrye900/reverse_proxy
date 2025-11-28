@@ -69,12 +69,27 @@ jobs:
 
   deploy:
     needs: build-and-push
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Deploy to Local Kubernetes
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+    
+    - name: Set up Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: 'latest'
+    
+    - name: Create kind cluster
+      uses: helm/kind-action@v1.4.0
+      with:
+        cluster_name: ecommerce-cluster
+    
+    - name: Deploy to Kubernetes
       run: |
         # Create namespace if it doesn't exist
         kubectl create namespace ecommerce --dry-run=client -o yaml | kubectl apply -f -
