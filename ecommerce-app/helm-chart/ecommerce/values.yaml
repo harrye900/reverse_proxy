@@ -1,6 +1,6 @@
 # Global settings
 global:
-  registry: acrecommerce1809.azurecr.io
+  registry: ""  # Docker Hub (no registry prefix needed)
   pullPolicy: Always
   namespace: ecommerce
 
@@ -8,7 +8,7 @@ global:
 frontend:
   name: frontend
   image:
-    repository: ecommerce-frontend
+    repository: yourusername/ecommerce-frontend
     tag: latest
   service:
     type: LoadBalancer
@@ -33,7 +33,7 @@ frontend:
 backend:
   name: backend
   image:
-    repository: ecommerce-backend
+    repository: yourusername/ecommerce-backend
     tag: latest
   service:
     type: LoadBalancer
@@ -58,7 +58,7 @@ backend:
 authService:
   name: auth-service
   image:
-    repository: ecommerce-auth
+    repository: yourusername/ecommerce-auth
     tag: latest
   service:
     type: ClusterIP
@@ -82,7 +82,7 @@ authService:
 checkoutService:
   name: checkout-service
   image:
-    repository: ecommerce-checkout
+    repository: yourusername/ecommerce-checkout
     tag: latest
   service:
     type: ClusterIP
@@ -106,7 +106,7 @@ checkoutService:
 paymentService:
   name: payment-service
   image:
-    repository: ecommerce-payment
+    repository: yourusername/ecommerce-payment
     tag: latest
   service:
     type: ClusterIP

@@ -1,0 +1,68 @@
+name: Build and Push to Docker Hub
+
+on:
+  push:
+    branches: [ deploytomicrok8s ]
+  workflow_dispatch:
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ env.DOCKER_USERNAME }}
+        password: ${{ env.DOCKER_PASSWORD }}
+    
+    - name: Build and push Frontend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./ecommerce-app/frontend/
+        push: true
+        tags: |
+          ${{ env.DOCKER_USERNAME }}/ecommerce-frontend:latest
+          ${{ env.DOCKER_USERNAME }}/ecommerce-frontend:${{ github.sha }}
+    
+    - name: Build and push Backend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./ecommerce-app/backend/
+        push: true
+        tags: |
+          ${{ env.DOCKER_USERNAME }}/ecommerce-backend:latest
+          ${{ env.DOCKER_USERNAME }}/ecommerce-backend:${{ github.sha }}
+    
+    - name: Build and push Auth Service
+      uses: docker/build-push-action@v5
+      with:
+        context: ./ecommerce-app/microservices/auth-service/
+        push: true
+        tags: |
+          ${{ env.DOCKER_USERNAME }}/ecommerce-auth:latest
+          ${{ env.DOCKER_USERNAME }}/ecommerce-auth:${{ github.sha }}
+    
+    - name: Build and push Checkout Service
+      uses: docker/build-push-action@v5
+      with:
+        context: ./ecommerce-app/microservices/checkout-service/
+        push: true
+        tags: |
+          ${{ env.DOCKER_USERNAME }}/ecommerce-checkout:latest
+          ${{ env.DOCKER_USERNAME }}/ecommerce-checkout:${{ github.sha }}
+    
+    - name: Build and push Payment Service
+      uses: docker/build-push-action@v5
+      with:
+        context: ./ecommerce-app/microservices/payment-service/
+        push: true
+        tags: |
+          ${{ env.DOCKER_USERNAME }}/ecommerce-payment:latest
+          ${{ env.DOCKER_USERNAME }}/ecommerce-payment:${{ github.sha }}
