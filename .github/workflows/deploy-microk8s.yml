@@ -102,9 +102,10 @@ jobs:
           --set authService.image.tag=latest \
           --set checkoutService.image.tag=latest \
           --set paymentService.image.tag=latest \
-          --set ingress.enabled=false \
-          --wait --timeout=10m
+          --set ingress.enabled=false
         
         # Show deployment status
         kubectl get pods -n ecommerce
         kubectl get services -n ecommerce
+        kubectl describe pods -n ecommerce
+        kubectl get events -n ecommerce --sort-by='.lastTimestamp'
