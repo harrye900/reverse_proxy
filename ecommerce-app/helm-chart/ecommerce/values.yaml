@@ -8,7 +8,7 @@ global:
 frontend:
   name: frontend
   image:
-    repository: yourusername/ecommerce-frontend
+    repository: harifosa/ecommerce-frontend
     tag: latest
   service:
     type: LoadBalancer
@@ -33,7 +33,7 @@ frontend:
 backend:
   name: backend
   image:
-    repository: yourusername/ecommerce-backend
+    repository: harifosa/ecommerce-backend
     tag: latest
   service:
     type: LoadBalancer
@@ -58,7 +58,7 @@ backend:
 authService:
   name: auth-service
   image:
-    repository: yourusername/ecommerce-auth
+    repository: harifosa/ecommerce-auth
     tag: latest
   service:
     type: ClusterIP
@@ -82,7 +82,7 @@ authService:
 checkoutService:
   name: checkout-service
   image:
-    repository: yourusername/ecommerce-checkout
+    repository: harifosa/ecommerce-checkout
     tag: latest
   service:
     type: ClusterIP
@@ -106,7 +106,7 @@ checkoutService:
 paymentService:
   name: payment-service
   image:
-    repository: yourusername/ecommerce-payment
+    repository: harifosa/ecommerce-payment
     tag: latest
   service:
     type: ClusterIP
