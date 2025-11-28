@@ -94,7 +94,7 @@ jobs:
         # Create namespace if it doesn't exist
         kubectl create namespace ecommerce --dry-run=client -o yaml | kubectl apply -f -
         
-        # Deploy using Helm
+        # Deploy using Helm (disable ingress for kind cluster)
         helm upgrade --install ecommerce ./ecommerce-app/helm-chart/ecommerce \
           --namespace ecommerce \
           --set frontend.image.tag=latest \
@@ -102,6 +102,7 @@ jobs:
           --set authService.image.tag=latest \
           --set checkoutService.image.tag=latest \
           --set paymentService.image.tag=latest \
+          --set ingress.enabled=false \
           --wait --timeout=10m
         
         # Show deployment status
